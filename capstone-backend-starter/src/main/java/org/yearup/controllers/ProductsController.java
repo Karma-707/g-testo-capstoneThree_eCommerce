@@ -18,8 +18,9 @@ import java.util.List;
 @CrossOrigin
 public class ProductsController
 {
-    private ProductDao productDao;
     private static final Logger logger = LoggerFactory.getLogger(ProductsController.class);
+
+    private ProductDao productDao;
 
     @Autowired
     public ProductsController(ProductDao productDao)

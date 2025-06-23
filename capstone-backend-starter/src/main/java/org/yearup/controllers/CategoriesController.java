@@ -23,10 +23,10 @@ import java.util.List;
 @CrossOrigin
 public class CategoriesController
 {
-    private CategoryDao categoryDao;
-    private ProductDao productDao;
     private static final Logger logger = LoggerFactory.getLogger(CategoriesController.class);
 
+    private CategoryDao categoryDao;
+    private ProductDao productDao;
 
     // create an Autowired controller to inject the categoryDao and ProductDao
     @Autowired

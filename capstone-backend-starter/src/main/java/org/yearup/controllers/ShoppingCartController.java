@@ -1,6 +1,11 @@
 package org.yearup.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.yearup.data.ProductDao;
 import org.yearup.data.ShoppingCartDao;
@@ -11,15 +16,18 @@ import org.yearup.models.User;
 import java.security.Principal;
 
 // convert this class to a REST controller
+@RestController
+@RequestMapping("cart")
 // only logged in users should have access to these actions
+@PreAuthorize("isAuthenticated()")
 public class ShoppingCartController
 {
+    private static final Logger logger = LoggerFactory.getLogger(ShoppingCartController.class);
+
     // a shopping cart requires
     private ShoppingCartDao shoppingCartDao;
     private UserDao userDao;
     private ProductDao productDao;
-
-
 
     // each method in this controller requires a Principal object as a parameter
     public ShoppingCart getCart(Principal principal)
