@@ -35,6 +35,7 @@ public class CategoriesController
     // add the appropriate annotation for a get action
     @GetMapping("")
     @PreAuthorize("permitAll()")
+    @ResponseStatus(HttpStatus.OK)
     public List<Category> getAll()
     {
         // find and return all categories
@@ -44,6 +45,7 @@ public class CategoriesController
     // add the appropriate annotation for a get action
     @GetMapping("{id}")
     @PreAuthorize("permitAll()")
+    @ResponseStatus(HttpStatus.OK)
     public Category getById(@PathVariable int id)
     {
         // get the category by id
@@ -53,6 +55,7 @@ public class CategoriesController
     // the url to return all products in category 1 would look like this
     // https://localhost:8080/categories/1/products
     @GetMapping("{categoryId}/products")
+    @ResponseStatus(HttpStatus.OK)
     public List<Product> getProductsById(@PathVariable int categoryId)
     {
         // get a list of product by categoryId
@@ -63,6 +66,7 @@ public class CategoriesController
     @PostMapping()
     // add annotation to ensure that only an ADMIN can call this function
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.CREATED)
     public Category addCategory(@RequestBody Category category)
     {
         // insert the category
@@ -73,6 +77,7 @@ public class CategoriesController
     @PutMapping("{id}")
     // add annotation to ensure that only an ADMIN can call this function
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateCategory(@PathVariable int id, @RequestBody Category category)
     {
         // update the category by id
@@ -83,6 +88,7 @@ public class CategoriesController
     @DeleteMapping("{id}")
     // add annotation to ensure that only an ADMIN can call this function
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable int id)
     {
         // delete the category by id
