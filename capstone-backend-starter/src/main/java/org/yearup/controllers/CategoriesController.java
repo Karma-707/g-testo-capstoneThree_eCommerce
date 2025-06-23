@@ -76,7 +76,7 @@ public class CategoriesController
     public void updateCategory(@PathVariable int id, @RequestBody Category category)
     {
         // update the category by id
-        categoryDao.create(category);
+        categoryDao.update(id, category);
     }
 
     // add annotation to call this method for a DELETE action - the url path must include the categoryId
