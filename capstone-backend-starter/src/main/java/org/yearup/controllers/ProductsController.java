@@ -1,5 +1,7 @@
 package org.yearup.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +19,7 @@ import java.util.List;
 public class ProductsController
 {
     private ProductDao productDao;
+    private static final Logger logger = LoggerFactory.getLogger(ProductsController.class);
 
     @Autowired
     public ProductsController(ProductDao productDao)
@@ -32,12 +35,16 @@ public class ProductsController
                                 @RequestParam(name="color", required = false) String color
                                 )
     {
+        logger.info("Searching products with filters - categoryId: {}, minPrice: {}, maxPrice: {}, color: {}",
+                categoryId, minPrice, maxPrice, color);
+
         try
         {
             return productDao.search(categoryId, minPrice, maxPrice, color);
         }
         catch(Exception ex)
         {
+            logger.error("Error searching products", ex);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }
@@ -47,17 +54,21 @@ public class ProductsController
     @ResponseStatus(HttpStatus.OK)
     public Product getById(@PathVariable int id )
     {
+        logger.info("Fetching product with ID: {}", id);
+
         try
         {
             var product = productDao.getById(id);
 
-            if(product == null)
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
+            if(product == null) {
+                logger.warn("Product with ID {} not found", id);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+            }
             return product;
         }
         catch(Exception ex)
         {
+            logger.error("Error fetching product with ID: " + id, ex);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }
@@ -67,12 +78,15 @@ public class ProductsController
     @ResponseStatus(HttpStatus.CREATED)
     public Product addProduct(@RequestBody Product product)
     {
+        logger.info("Adding new product: {}", product);
+
         try
         {
             return productDao.create(product);
         }
         catch(Exception ex)
         {
+            logger.error("Error adding product: {}", product, ex);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }
@@ -82,12 +96,15 @@ public class ProductsController
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateProduct(@PathVariable int id, @RequestBody Product product)
     {
+        logger.info("Updating product with ID {}: {}", id, product);
+
         try
         {
             productDao.update(id, product);
         }
         catch(Exception ex)
         {
+            logger.error("Error updating product with ID {}: {}", id, product, ex);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }
@@ -97,17 +114,22 @@ public class ProductsController
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProduct(@PathVariable int id)
     {
+        logger.info("Deleting product with ID: {}", id);
+
         try
         {
             var product = productDao.getById(id);
 
-            if(product == null)
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            if(product == null) {
+                logger.warn("Product with ID {} not found for deletion", id);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+            }
 
             productDao.delete(id);
         }
         catch(Exception ex)
         {
+            logger.error("Error deleting product with ID: " + id, ex);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }
