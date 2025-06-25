@@ -19,6 +19,7 @@ import java.security.Principal;
 // convert this class to a REST controller
 @RestController
 @RequestMapping("cart")
+@CrossOrigin
 // only logged in users should have access to these actions
 @PreAuthorize("isAuthenticated()")
 public class ShoppingCartController
@@ -116,8 +117,8 @@ public class ShoppingCartController
     // add a DELETE method to clear all products from the current users cart
     // https://localhost:8080/cart
     @DeleteMapping("")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCart(Principal principal) {
+    @ResponseStatus(HttpStatus.OK)
+    public ShoppingCart deleteCart(Principal principal) {
         try {
             // get the currently logged in username
             String userName = principal.getName();
@@ -130,6 +131,7 @@ public class ShoppingCartController
             shoppingCartDao.clearCart(userId);
             logger.info("Cleared cart for user {}", userName);
 
+            return shoppingCartDao.getByUserId(userId); //return now empty cart
         }
         catch (Exception e) {
             logger.error("Failed to clear cart for user", e);

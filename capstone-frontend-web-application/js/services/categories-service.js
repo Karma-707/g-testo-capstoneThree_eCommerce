@@ -12,7 +12,7 @@ class CategoryService {
                 callback(response.data);
             })
             .catch(error => {
-
+                console.log(error);
                 const data = {
                     error: "Loading categories failed."
                 };

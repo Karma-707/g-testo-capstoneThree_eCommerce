@@ -152,7 +152,6 @@ class ShoppingCartService {
                      items: [],
                      total: 0
                  }
-
                  this.cart.total = response.data.total;
 
                  for (const [key, value] of Object.entries(response.data.items)) {
@@ -164,7 +163,6 @@ class ShoppingCartService {
 
              })
              .catch(error => {
-
                  const data = {
                      error: "Empty cart failed."
                  };

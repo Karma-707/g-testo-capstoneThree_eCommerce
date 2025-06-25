@@ -38,13 +38,17 @@ public class CategoriesController
     // add the appropriate annotation for a get action
     @GetMapping("")
     @PreAuthorize("permitAll()")
-    @ResponseStatus(HttpStatus.OK)
+//    @ResponseStatus(HttpStatus.OK)
     public List<Category> getAll()
     {
         // find and return all categories
-        logger.info("Fetching all categories");
-
-        return categoryDao.getAllCategories();
+        try {
+            logger.info("Fetching all categories");
+            return categoryDao.getAllCategories();
+        } catch (Exception e) {
+            logger.error("Error fetching categories", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not load categories.");
+        }
     }
 
     // add the appropriate annotation for a get action
