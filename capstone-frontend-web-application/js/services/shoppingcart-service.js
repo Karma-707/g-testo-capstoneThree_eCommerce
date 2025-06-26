@@ -99,9 +99,27 @@ class ShoppingCartService {
         main.appendChild(contentDiv);
 
         // let parent = document.getElementById("cart-item-list");
-        this.cart.items.forEach(item => {
-            this.buildItem(item, contentDiv)
-        });
+
+//        this.cart.items.forEach(item => {
+//            this.buildItem(item, contentDiv)
+//        });
+
+       if (this.cart.items.length === 0) {
+           const emptyMessage = document.createElement("div");
+           emptyMessage.classList.add("empty-cart-message");
+           emptyMessage.innerHTML = `
+               <p>Your cart is empty 😢</p>
+               <p>Add something to get started!</p>
+               <button class="btn btn-primary" style="margin-top: 15px;" onclick="loadHome()">Back to Home</button>
+           `;
+           contentDiv.appendChild(emptyMessage);
+       } else {
+           this.cart.items.forEach(item => {
+               this.buildItem(item, contentDiv);
+           });
+       }
+
+
     }
 
     buildItem(item, parent)

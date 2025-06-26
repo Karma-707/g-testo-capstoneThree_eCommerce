@@ -337,3 +337,17 @@ main > .filter-box,
 .cart-item.animate {
   animation: bounce-in 0.3s ease-in-out;
 }
+
+.empty-cart-message {
+    padding: 30px;
+    text-align: center;
+    font-size: 1.2em;
+    color: #444;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+.empty-cart-message button {
+    padding: 10px 20px;
+    font-size: 1em;
+}
