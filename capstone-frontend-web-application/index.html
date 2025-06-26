@@ -2,14 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>EasyShop</title>
 
-    <!--  CSS  -->
+    <!-- CSS -->
     <link rel="stylesheet" href="css/lib/bootstrap.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="css/main.css">
 
-    <!--  JS  -->
+    <style>
+        /* Animate cart item when added */
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            60% {
+                transform: scale(1.05);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .cart-item {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background-color: white;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .cart-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(13, 110, 253, 0.15);
+        }
+
+        .cart-item.newly-added {
+            animation: bounceIn 0.3s ease;
+        }
+    </style>
+
+    <!-- JS -->
     <script src="js/lib/axios.min.js"></script>
     <script src="js/lib/mustache.js"></script>
     <script src="js/lib/bootstrap.min.js"></script>
@@ -24,24 +61,19 @@
     <script src="js/services/shoppingcart-service.js"></script>
 
     <script src="js/filter.js"></script>
-
-
     <script src="js/application.js"></script>
 </head>
 <body>
 
-    <header id="header-user"></header>
+<header id="header-user"></header>
 
-    <section id="errors">
-    </section>
+<section id="errors"></section>
 
-    <section id="login"></section>
+<section id="login"></section>
 
-    <main id="main">
-    </main>
+<main id="main"></main>
 
-    <footer></footer>
-
+<footer></footer>
 
 </body>
 </html>

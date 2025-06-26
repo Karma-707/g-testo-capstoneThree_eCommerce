@@ -30,10 +30,16 @@ function showImageDetailForm(product, imageUrl)
 
 function loadHome()
 {
-    templateBuilder.build('home',{},'main')
+//    templateBuilder.build('home',{},'main')
+//
+//    productService.search();
+//    categoryService.getAllCategories(loadCategories);
 
-    productService.search();
-    categoryService.getAllCategories(loadCategories);
+    templateBuilder.build('home', {}, 'main', () => {
+        productService.search();
+        categoryService.getAllCategories(loadCategories);
+    });
+
 }
 
 function editProfile()
@@ -122,7 +128,15 @@ function closeError(control)
     },3000);
 }
 
+function handleSearchInput(event) {
+  const query = event.target.value.trim();
+  productService.addSearchFilter(query);
+  productService.search();
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
 
     loadHome();
 });
+

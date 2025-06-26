@@ -19,15 +19,19 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
     }
 
     @Override
-    public List<Product> search(Integer categoryId, BigDecimal minPrice, BigDecimal maxPrice, String color)
+    public List<Product> search(Integer categoryId, BigDecimal minPrice, BigDecimal maxPrice, String color, String searchTerm)
     {
         List<Product> products = new ArrayList<>();
+
+        String searchPattern = (searchTerm == null || searchTerm.isBlank()) ? "%" : "%" + searchTerm + "%";
+
 
         String sql = "SELECT * FROM products " +
                 "WHERE (category_id = ? OR ? = -1) " +
                 "   AND (price >= ? OR ? = -1) " +
                 "   AND (price <= ? OR ? = -1) " +
-                "   AND (color = ? OR ? = '') ";
+                "   AND (color = ? OR ? = '') " +
+                "  AND (name LIKE ? OR description LIKE ?)";  // <-- Add this search condition
 
         categoryId = categoryId == null ? -1 : categoryId;
         minPrice = minPrice == null ? new BigDecimal("-1") : minPrice;
@@ -48,6 +52,9 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
 
             statement.setString(7, color);
             statement.setString(8, color);
+
+            statement.setString(9, searchPattern);  // For name LIKE ?
+            statement.setString(10, searchPattern); // For description LIKE ?
 
             ResultSet row = statement.executeQuery();
 

@@ -4,37 +4,44 @@ class ProductService {
 
     photos = [];
 
+filter = {
+    cat: undefined,
+    minPrice: undefined,
+    maxPrice: undefined,
+    color: undefined,
+    search: undefined,      // <-- NEW
 
-    filter = {
-        cat: undefined,
-        minPrice: undefined,
-        maxPrice: undefined,
-        color: undefined,
-        queryString: () => {
-            let qs = "";
-            if(this.filter.cat){ qs = `cat=${this.filter.cat}`; }
-            if(this.filter.minPrice)
-            {
-                const minP = `minPrice=${this.filter.minPrice}`;
-                if(qs.length>0) {   qs += `&${minP}`; }
-                else { qs = minP; }
-            }
-            if(this.filter.maxPrice)
-            {
-                const maxP = `maxPrice=${this.filter.maxPrice}`;
-                if(qs.length>0) {   qs += `&${maxP}`; }
-                else { qs = maxP; }
-            }
-            if(this.filter.color)
-            {
-                const col = `color=${this.filter.color}`;
-                if(qs.length>0) {   qs += `&${col}`; }
-                else { qs = col; }
-            }
-
-            return qs.length > 0 ? `?${qs}` : "";
+    queryString: function() {      // <---- CHANGE here: use function(), not arrow
+        let qs = "";
+        if(this.cat){ qs = `cat=${this.cat}`; }
+        if(this.minPrice)
+        {
+            const minP = `minPrice=${this.minPrice}`;
+            if(qs.length>0) {   qs += `&${minP}`; }
+            else { qs = minP; }
         }
+        if(this.maxPrice)
+        {
+            const maxP = `maxPrice=${this.maxPrice}`;
+            if(qs.length>0) {   qs += `&${maxP}`; }
+            else { qs = maxP; }
+        }
+        if(this.color)
+        {
+            const col = `color=${this.color}`;
+            if(qs.length>0) {   qs += `&${col}`; }
+            else { qs = col; }
+        }
+
+        if(this.search) {
+            const s = `search=${encodeURIComponent(this.search)}`;
+            qs = qs.length > 0 ? `${qs}&${s}` : s;
+        }
+
+        return qs.length > 0 ? `?${qs}` : "";
     }
+};
+
 
     constructor() {
 
@@ -87,9 +94,20 @@ class ProductService {
         this.filter.color = undefined;
     }
 
+    addSearchFilter(searchTerm) {
+        if(searchTerm === "") this.clearSearchFilter();
+        else this.filter.search = searchTerm;
+    }
+
+    clearSearchFilter() {
+        this.filter.search = undefined;
+    }
+
+
     search()
     {
         const url = `${config.baseUrl}/products${this.filter.queryString()}`;
+        console.log('Request URL:', url);
 
         axios.get(url)
              .then(response => {
@@ -134,7 +152,17 @@ class ProductService {
         }
     }
 
+    clearAllFilters() {
+        this.clearCategoryFilter();
+        this.clearMinPriceFilter();
+        this.clearMaxPriceFilter();
+        this.clearColorFilter();
+        this.clearSearchFilter();
+    }
+
 }
+
+
 
 
 

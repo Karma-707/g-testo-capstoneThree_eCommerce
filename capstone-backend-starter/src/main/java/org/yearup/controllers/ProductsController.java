@@ -33,15 +33,20 @@ public class ProductsController
     public List<Product> search(@RequestParam(name="cat", required = false) Integer categoryId,
                                 @RequestParam(name="minPrice", required = false) BigDecimal minPrice,
                                 @RequestParam(name="maxPrice", required = false) BigDecimal maxPrice,
-                                @RequestParam(name="color", required = false) String color
-                                )
+                                @RequestParam(name="color", required = false) String color,
+                                @RequestParam(name="search", required = false) String searchTerm)   // <-- add this
+
     {
-        logger.info("Searching products with filters - categoryId: {}, minPrice: {}, maxPrice: {}, color: {}",
-                categoryId, minPrice, maxPrice, color);
+//        logger.info("Searching products with filters - categoryId: {}, minPrice: {}, maxPrice: {}, color: {}",
+//                categoryId, minPrice, maxPrice, color);
+        logger.info("Searching products with filters - categoryId: {}, minPrice: {}, maxPrice: {}, color: {}, search: {}",
+                categoryId, minPrice, maxPrice, color, searchTerm);
 
         try
         {
-            return productDao.search(categoryId, minPrice, maxPrice, color);
+//            return productDao.search(categoryId, minPrice, maxPrice, color);
+            return productDao.search(categoryId, minPrice, maxPrice, color, searchTerm);   // <-- pass it along
+
         }
         catch(Exception ex)
         {

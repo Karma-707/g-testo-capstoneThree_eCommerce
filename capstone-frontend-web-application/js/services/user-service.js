@@ -137,6 +137,10 @@ class UserService {
         axios.defaults.headers.common = {'Authorization': `bearer ${this.currentUser.token}`}
         this.currentUser = {};
 
+        // 👇 Clear filters and refresh the product list
+        productService.clearAllFilters();
+        productService.search();
+
         this.setHeaderLogin();
 
         productService.enableButtons();

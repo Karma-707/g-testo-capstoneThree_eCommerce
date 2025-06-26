@@ -14,7 +14,11 @@ import org.yearup.models.ShoppingCart;
 import org.yearup.models.ShoppingCartItem;
 import org.yearup.models.User;
 
+import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 // convert this class to a REST controller
 @RestController
@@ -64,10 +68,11 @@ public class ShoppingCartController
         }
     }
 
+
     // add a POST method to add a product to the cart - the url should be
     // https://localhost:8080/cart/products/15 (15 is the productId to be added
     @PostMapping("products/{id}")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public ShoppingCart addProductToCart(@PathVariable int id, Principal principal) {
 
         try {
@@ -96,20 +101,36 @@ public class ShoppingCartController
     @PutMapping("products/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateProductQuantity(@PathVariable int id, @RequestBody ShoppingCartItem shoppingCartItem, Principal principal) {
+        String userName = null;
         try {
             // get the currently logged in username
-            String userName = principal.getName();
+            userName = principal.getName();
             logger.info("Updating quantity of product {} in cart for user: {}", id, userName);
 
             // find database user by userId
             User user = userDao.getByUserName(userName);
             int userId = user.getId();
 
-            logger.info("Updated product {} quantity to {} for user {}", id, shoppingCartItem.getQuantity(), userName);
+            //check if product exist in cart
+            boolean exist = shoppingCartDao.productInCart(userId, id);
+            //doesn't exist
+            logger.info("ProductInCart check for userId={} productId={} result={}", userId, id, exist);
+
+            if(!exist) {
+                logger.warn("Product {} not found in cart for user {}", id, userName);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found in cart");
+            }
+
+            //exist - update to cart
             shoppingCartDao.updateProductQuantity(userId, id, shoppingCartItem.getQuantity());
+            logger.info("Updated product {} quantity to {} for user {}", id, shoppingCartItem.getQuantity(), userName);
+
+        } catch (ResponseStatusException ex) {
+            // Rethrow ResponseStatusExceptions as-is, don't wrap them
+            throw ex;
         }
         catch (Exception e) {
-            logger.error("Failed to update product quantity for user", e);
+            logger.error("Failed to update product quantity for user {} and product {}. Exception: {}", userName, id, e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not update quantity.");
         }
     }

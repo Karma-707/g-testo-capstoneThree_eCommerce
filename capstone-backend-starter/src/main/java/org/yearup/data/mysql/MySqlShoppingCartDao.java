@@ -39,13 +39,13 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         try(
                 Connection connection = getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
-            )
+        )
         {
             preparedStatement.setInt(1, userId);
 
             try(
                     ResultSet resultSet = preparedStatement.executeQuery();
-                )
+            )
             {
                 if(resultSet.next()) {
                     do{
@@ -82,12 +82,10 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         String updateQuery = "UPDATE shopping_cart SET quantity = quantity + ? WHERE user_id = ? AND product_id = ?;";
         String insertQuery = "INSERT INTO shopping_cart(user_id, product_id, quantity) VALUES(?, ?, ?);";
 
-
-
         try (
                 Connection connection = getConnection();
                 PreparedStatement updatePS = connection.prepareStatement(updateQuery);
-            )
+        )
         {
             updatePS.setInt(1, quantityToAdd);
             updatePS.setInt(2, userId);
@@ -100,7 +98,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
 
                 try (
                         PreparedStatement insertPS = connection.prepareStatement(insertQuery);
-                    )
+                )
                 {
                     insertPS.setInt(1, userId);
                     insertPS.setInt(2, productId);
@@ -117,39 +115,6 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
             e.printStackTrace();
         }
 
-
-
-
-//        String selectQuery = "SELECT quantity FROM shopping_cart WHERE user_id = ? AND product_id = ?; "; //grab quantity
-//
-//        try (
-//                Connection connection = getConnection();
-//                PreparedStatement selectPS = connection.prepareStatement(selectQuery);
-//            )
-//        {
-//            selectPS.setInt(1, userId);
-//            selectPS.setInt(2, productId);
-//
-//            try (
-//                ResultSet resultSet = selectPS.executeQuery();
-//                )
-//            {
-//                if(resultSet.next()) {
-//                    //there is already that item in cart; +1
-//                    String updateQuery = "UPDATE shopping_cart SET quantity = ? WHERE user_id = ? AND product_id = ?";
-//
-//                }
-//                else {
-//                    //new item add to cart
-//                }
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-
-
-
     }
 
     @Override
@@ -160,7 +125,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         try (
                 Connection connection = getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
-            )
+        )
         {
             preparedStatement.setInt(1, quantity);
             preparedStatement.setInt(2, userId);
@@ -182,7 +147,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         try (
                 Connection connection = getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
-            )
+        )
         {
             preparedStatement.setInt(1, userId);
             preparedStatement.executeUpdate();
@@ -190,6 +155,35 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
             e.printStackTrace();
         }
     }
+
+    //check if there is product in cart
+    @Override
+    public boolean productInCart(int userId, int productId) {
+        String query = "SELECT COUNT(*) FROM shopping_cart WHERE user_id = ? AND product_id = ?;";
+
+        try(
+                Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+            )
+        {
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, productId);
+
+            try(
+                    ResultSet resultSet = preparedStatement.executeQuery();
+                )
+            {
+                if(resultSet.next()) {
+                    return resultSet.getInt(1) > 0; //get 1st col value
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     private ShoppingCartItem mapRow(ResultSet row) throws SQLException {
         int userId = row.getInt("user_id");
