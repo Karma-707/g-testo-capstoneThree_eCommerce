@@ -170,15 +170,15 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
     public void update(int productId, Product product)
     {
         String sql = "UPDATE products" +
-                " SET name = ? " +
-                "   , price = ? " +
-                "   , category_id = ? " +
-                "   , description = ? " +
-                "   , color = ? " +
-                "   , image_url = ? " +
-                "   , stock = ? " +
-                "   , featured = ? " +
-                " WHERE product_id = ?;";
+                "SET name = ?," +
+                " price = ?," +
+                " category_id = ?," +
+                " description = ?," +
+                " color = ?," +
+                " image_url = ?," +
+                " stock = ?," +
+                " featured = ? " +
+                "WHERE product_id = ?;";
 
         try (Connection connection = getConnection())
         {
