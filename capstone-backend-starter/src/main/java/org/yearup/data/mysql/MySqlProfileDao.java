@@ -47,7 +47,7 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
         catch (SQLException e)
         {
             logger.error("Error creating profile for user_id: {}", profile.getUserId(), e);
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to create profile", e);
         }
     }
 
@@ -77,7 +77,7 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
 
         } catch (SQLException e) {
             logger.error("Error retrieving profile for user_id: {}", userId, e);
-//            e.printStackTrace();
+            throw new RuntimeException("Failed to retrieve profile", e);
         }
 
         return null;
@@ -122,11 +122,8 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
 
         } catch (SQLException e) {
             logger.error("Error updating profile for user_id: {}", profile.getUserId(), e);
-
-//            e.printStackTrace();
+            throw new RuntimeException("Failed to update profile", e);
         }
-
-
     }
 
     private Profile mapRow(ResultSet row) throws SQLException

@@ -60,15 +60,12 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
 
                 }
                 else {
-//                    System.out.println("No cart found with that id");
                     logger.info("No cart items found for userId: {}", userId);
-
                 }
             }
 
         } catch (SQLException e) {
-//            e.printStackTrace();
-            logger.error("SQL error while fetching cart for userId: {}", userId, e);
+            logger.error("Failed to fetch cart for userId={}", userId, e);
         }
 
         return shoppingCart;
@@ -98,23 +95,27 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
 
                 try (
                         PreparedStatement insertPS = connection.prepareStatement(insertQuery);
-                )
+                    )
                 {
                     insertPS.setInt(1, userId);
                     insertPS.setInt(2, productId);
                     insertPS.setInt(3, quantityToAdd);
                     insertPS.executeUpdate();
 
+                    logger.info("Inserted new product into cart: userId={}, productId={}, quantity={}", userId, productId, quantityToAdd);
+
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    logger.error("Failed to add/update product in cart: userId={}, productId={}", userId, productId, e);
                 }
 
             }
+            else {
+                logger.info("Incremented product quantity in cart: userId={}, productId={}, added={}", userId, productId, quantityToAdd);
+            }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to add/update product in cart: userId={}, productId={}", userId, productId, e);
         }
-
     }
 
     @Override
@@ -125,7 +126,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         try (
                 Connection connection = getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
-        )
+            )
         {
             preparedStatement.setInt(1, quantity);
             preparedStatement.setInt(2, userId);
@@ -136,7 +137,6 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
 
         } catch (SQLException e) {
             logger.error("Failed to update product quantity in cart for userId={} and productId={}", userId, productId, e);
-//            e.printStackTrace();
         }
     }
 
@@ -147,12 +147,14 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         try (
                 Connection connection = getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
-        )
+            )
         {
             preparedStatement.setInt(1, userId);
-            preparedStatement.executeUpdate();
+            int deleted = preparedStatement.executeUpdate();
+            logger.info("Cleared {} cart item(s) for userId={}", deleted, userId);
+
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to clear cart for userId={}", userId, e);
         }
     }
 
@@ -174,16 +176,19 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
                 )
             {
                 if(resultSet.next()) {
-                    return resultSet.getInt(1) > 0; //get 1st col value
+                    boolean exists = resultSet.getInt(1) > 0;
+                    logger.debug("Checked product in cart: userId={}, productId={}, exists={}", userId, productId, exists);
+
+                    return exists; //get 1st col value
                 }
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to check product in cart: userId={}, productId={}", userId, productId, e);
         }
+
         return false;
     }
-
 
     private ShoppingCartItem mapRow(ResultSet row) throws SQLException {
         int userId = row.getInt("user_id");

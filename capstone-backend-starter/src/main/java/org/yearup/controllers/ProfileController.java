@@ -53,6 +53,7 @@ public class ProfileController {
         profile.setUserId(userId); //set userId before updating
         profileDao.update(profile);
 
+        logger.info("Profile updated successfully for user ID: {}", userId);
         return profile;
     }
 

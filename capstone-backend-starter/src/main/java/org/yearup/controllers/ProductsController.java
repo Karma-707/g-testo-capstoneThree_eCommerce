@@ -37,15 +37,12 @@ public class ProductsController
                                 @RequestParam(name="search", required = false) String searchTerm)   // <-- add this
 
     {
-//        logger.info("Searching products with filters - categoryId: {}, minPrice: {}, maxPrice: {}, color: {}",
-//                categoryId, minPrice, maxPrice, color);
         logger.info("Searching products with filters - categoryId: {}, minPrice: {}, maxPrice: {}, color: {}, search: {}",
                 categoryId, minPrice, maxPrice, color, searchTerm);
 
         try
         {
-//            return productDao.search(categoryId, minPrice, maxPrice, color);
-            return productDao.search(categoryId, minPrice, maxPrice, color, searchTerm);   // <-- pass it along
+            return productDao.search(categoryId, minPrice, maxPrice, color, searchTerm);   // <-- pass it along (search term)
 
         }
         catch(Exception ex)
@@ -60,21 +57,19 @@ public class ProductsController
     @ResponseStatus(HttpStatus.OK)
     public Product getById(@PathVariable int id )
     {
-        logger.info("Fetching product with ID: {}", id);
-
         try
         {
             var product = productDao.getById(id);
 
             if(product == null) {
-                logger.warn("Product with ID {} not found", id);
+                logger.warn("Product not found with ID: {}", id);
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
             }
             return product;
         }
         catch(Exception ex)
         {
-            logger.error("Error fetching product with ID: " + id, ex);
+            logger.error("Error retrieving product with ID: {}", id, ex);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }
@@ -84,15 +79,14 @@ public class ProductsController
     @ResponseStatus(HttpStatus.CREATED)
     public Product addProduct(@RequestBody Product product)
     {
-        logger.info("Adding new product: {}", product);
-
         try
         {
+            logger.info("Adding new product: {}", product);
             return productDao.create(product);
         }
         catch(Exception ex)
         {
-            logger.error("Error adding product: {}", product, ex);
+            logger.error("Failed to add product: {}", product, ex);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }
@@ -102,15 +96,14 @@ public class ProductsController
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateProduct(@PathVariable int id, @RequestBody Product product)
     {
-        logger.info("Updating product with ID {}: {}", id, product);
-
         try
         {
             productDao.update(id, product);
+            logger.info("Product updated with ID: {}", id);
         }
         catch(Exception ex)
         {
-            logger.error("Error updating product with ID {}: {}", id, product, ex);
+            logger.error("Failed to update product with ID {}: {}", id, product, ex);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }
@@ -120,22 +113,21 @@ public class ProductsController
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProduct(@PathVariable int id)
     {
-        logger.info("Deleting product with ID: {}", id);
-
         try
         {
             var product = productDao.getById(id);
 
             if(product == null) {
-                logger.warn("Product with ID {} not found for deletion", id);
+                logger.warn("Product not found for deletion with ID: {}", id);
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
             }
 
             productDao.delete(id);
+            logger.info("Product deleted with ID: {}", id);
         }
         catch(Exception ex)
         {
-            logger.error("Error deleting product with ID: " + id, ex);
+            logger.error("Failed to delete product with ID: {}", id, ex);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }

@@ -14,11 +14,7 @@ import org.yearup.models.ShoppingCart;
 import org.yearup.models.ShoppingCartItem;
 import org.yearup.models.User;
 
-import java.math.BigDecimal;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 // convert this class to a REST controller
 @RestController

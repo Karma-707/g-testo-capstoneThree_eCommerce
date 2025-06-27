@@ -1,7 +1,5 @@
 package org.yearup.data.mysql;
 
-import com.mysql.cj.protocol.Resultset;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 import org.yearup.data.CategoryDao;
 import org.yearup.models.Category;
@@ -11,7 +9,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.CompactNumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +34,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
                 ResultSet resultSet = preparedStatement.executeQuery();
             )
         {
-            //loop resultset
+            //loop resultSet
             if(resultSet.next()) {
                 do {
                     Category category = mapRow(resultSet);
@@ -147,8 +144,6 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
     }
 
     @Override
