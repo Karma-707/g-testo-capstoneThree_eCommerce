@@ -4,7 +4,15 @@ Welcome to **EasyShop**, your one-stop shop for a seamless online shopping exper
 
 ---
 
-## Features
+## 🧩 UML Diagram
+
+The following UML diagram illustrates the structure and interaction between key components of the system.
+
+![UML Diagram](images/umlDiagram.png)
+
+---
+
+## ✨ Features
 
 - **User Registration and Authentication** (Spring Security)
 - **Product Catalog** with CRUD operations
